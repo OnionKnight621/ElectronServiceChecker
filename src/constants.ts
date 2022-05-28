@@ -9,7 +9,7 @@ export const API_TRIGGER_CHANNELS = {
   TRIGGER_START_BROWSER: "triggerStartBrowser",
   TRIGGER_CHECK_URI: "triggerCheckUri",
   TRIGGER_OPEN_PAGE: "triggerOpenPage",
-  TRIGGET_OPEN_EMAIL: "triggerOpenEmail"
+  TRIGGER_OPEN_EMAIL: "triggerOpenEmail"
 };
 
 export const API_GET_CHANNELS = {

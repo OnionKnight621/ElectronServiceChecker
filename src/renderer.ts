@@ -29,7 +29,11 @@
 import "./index.css";
 
 import { defaulthChromePass } from "./config";
-import { API_TRIGGER_CHANNELS, API_GET_CHANNELS } from "./constants";
+import {
+  API_TRIGGER_CHANNELS,
+  API_GET_CHANNELS,
+  MAX_PAGES_INSTANCES_NUMBER,
+} from "./constants";
 import { Account, IStartBrowserHandler } from "./handlers/startBrowserHandler";
 
 declare const api: {
@@ -46,10 +50,6 @@ const servicesLog = document.getElementById("servicesLog");
 const windowsNum = document.getElementById("windowsNum") as HTMLInputElement;
 const loadedSpan = document.getElementById("loadedSpan") as HTMLSpanElement;
 const chromePathEl = document.getElementById("chromePass") as HTMLSpanElement;
-
-const openOnService = document.querySelector(
-  ".open-on-service"
-) as HTMLButtonElement;
 
 let chromePath: string = defaulthChromePass;
 let file: string;
@@ -105,7 +105,8 @@ startBtn.addEventListener("click", () => {
   }
 
   const instances: string[] = [];
-  const maxInstances: number = Math.abs(Number(windowsNum.value)) || 5;
+  const maxInstances: number =
+    Math.abs(Number(windowsNum.value)) || MAX_PAGES_INSTANCES_NUMBER;
 
   const startBrowserOptions: IStartBrowserHandler = {
     chromePath,
@@ -121,7 +122,9 @@ startBtn.addEventListener("click", () => {
     servicesLog.innerHTML += `
       <li> ${account.uri} - <span style="color: ${
       account.status ? "green" : "red"
-    }">${account.status}</span> <button
+    }">${account.status}</span> <button data-email="${
+      account.email
+    }" data-pass="${account.pass}"
     type="button"
     class="btn btn-sm btn-secondary open-on-service"
   >
@@ -129,4 +132,22 @@ startBtn.addEventListener("click", () => {
   </button></li>
     `;
   });
+});
+
+// for not yet initialized elements
+document.addEventListener("click", function (e: MouseEvent) {
+  // MouseEvent.target for some reason are almost empty
+  const target = e.target as HTMLElement;
+
+  const classes: string[] = target.className?.split(" ");
+  if (classes.includes("open-on-service")) {
+    e.preventDefault();
+
+    const email = target.dataset?.email;
+    const password = target.dataset?.pass;
+
+    console.log(target.dataset, email, password)
+
+    api.send(API_TRIGGER_CHANNELS.TRIGGER_OPEN_EMAIL, { email, password });
+  }
 });

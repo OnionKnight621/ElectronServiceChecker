@@ -3,6 +3,7 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import { API_TRIGGER_CHANNELS } from "./constants";
 import getChromePathHandler from "./handlers/getChromePathHandler";
 import getTxtFileHandler from "./handlers/getTxtFileHndler";
+import openEmailhandler from "./handlers/openEmailHandler";
 import startBrowserHandler, {
   IStartBrowserHandler,
 } from "./handlers/startBrowserHandler";
@@ -67,9 +68,8 @@ ipcMain.on(
     })
 );
 
-ipcMain.on(
-  API_TRIGGER_CHANNELS.TRIGGET_OPEN_EMAIL,
-  (e, { email, password }) => {}
+ipcMain.on(API_TRIGGER_CHANNELS.TRIGGER_OPEN_EMAIL, (e, { email, password }) =>
+  openEmailhandler(mainWindow, { email, password })
 );
 
 // Quit when all windows are closed, except on macOS. There, it's common for applications and their menu bar to stay active until the user quits explicitly with Cmd + Q.
