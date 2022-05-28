@@ -30,7 +30,10 @@ function getTxtFileHandler(mainWindow: BrowserWindow) {
             return;
           }
 
-          mainWindow.webContents.send(API_GET_CHANNELS.GET_TXT_FILE, data);
+          mainWindow.webContents.send(API_GET_CHANNELS.GET_TXT_FILE, {
+            data,
+            filePath,
+          });
         });
       })
       .catch((err) => {

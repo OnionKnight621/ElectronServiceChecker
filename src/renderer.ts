@@ -48,8 +48,13 @@ const setChromePathBtn = document.getElementById(
 ) as HTMLButtonElement;
 const servicesLog = document.getElementById("servicesLog");
 const windowsNum = document.getElementById("windowsNum") as HTMLInputElement;
-const loadedSpan = document.getElementById("loadedSpan") as HTMLSpanElement;
+const txtPath = document.getElementById("txtPath") as HTMLSpanElement;
 const chromePathEl = document.getElementById("chromePass") as HTMLSpanElement;
+
+interface FileData {
+  data: string;
+  filePath: string;
+}
 
 let chromePath: string = defaulthChromePass;
 let file: string;
@@ -69,9 +74,9 @@ setChromePathBtn.addEventListener("click", async function () {
 loadBtn.addEventListener("click", async function () {
   api.send(API_TRIGGER_CHANNELS.TRIGGER_GET_TXT_FILE);
 
-  api.receive(API_GET_CHANNELS.GET_TXT_FILE, (data: string) => {
+  api.receive(API_GET_CHANNELS.GET_TXT_FILE, ({ data, filePath }: FileData) => {
     file = data;
-    loadedSpan.innerHTML = "loaded";
+    txtPath.innerHTML = filePath;
     startBtn.disabled = false;
   });
 });
@@ -120,16 +125,16 @@ startBtn.addEventListener("click", () => {
 
   api.receive(API_GET_CHANNELS.GET_URI_STATUS, (account: RecievedAccount) => {
     servicesLog.innerHTML += `
-      <li> ${account.uri} - <span style="color: ${
+    <li> 
+      ${account.uri} - <span style="color: ${
       account.status ? "green" : "red"
-    }">${account.status}</span> <button data-email="${
-      account.email
-    }" data-pass="${account.pass}"
-    type="button"
-    class="btn btn-sm btn-secondary open-on-service"
-  >
-    Start
-  </button></li>
+    }">${account.status}</span> 
+      <button data-email="${account.email}" data-pass="${
+      account.pass
+    }" type="button" class="btn btn-sm btn-secondary open-on-service">
+        Open email
+      </button>
+    </li>
     `;
   });
 });
@@ -146,7 +151,7 @@ document.addEventListener("click", function (e: MouseEvent) {
     const email = target.dataset?.email;
     const password = target.dataset?.pass;
 
-    console.log(target.dataset, email, password)
+    console.log(target.dataset, email, password);
 
     api.send(API_TRIGGER_CHANNELS.TRIGGER_OPEN_EMAIL, { email, password });
   }
