@@ -1,9 +1,9 @@
 import { BrowserWindow } from "electron";
 import { Browser } from "puppeteer-core";
 
-import openPage from "../services/openPage";
 import startBrowserCore from "../services/startBrowserCore";
 import checkUriHandler from "./checkUriHandler";
+import openPageHandler from "./openPageHandler";
 
 export interface Account {
   email: string;
@@ -39,14 +39,21 @@ async function startBrowserHandler({
 
       if (status) {
         try {
-          openPage(browserInstance, `https://${accounts[i].uri}`, instances);
+          openPageHandler(
+            browserInstance,
+            `https://${accounts[i].uri}`,
+            instances
+          );
         } catch (ex) {
           console.error("Failed to load URI", ex);
           alert(`Failed to load URI`);
+
+          throw ex;
         }
       }
       i++;
     }
+
     if (i > accounts.length) {
       clearInterval(mainIntervalID);
     }

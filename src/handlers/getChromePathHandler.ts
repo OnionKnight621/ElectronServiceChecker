@@ -31,6 +31,8 @@ function getChromePathHandler(mainWindow: BrowserWindow) {
       });
   } catch (ex) {
     console.error("Smth went wrong", ex);
+
+    throw ex;
   }
 }
 

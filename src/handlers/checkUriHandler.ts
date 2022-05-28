@@ -5,11 +5,20 @@ import checkURI from "../services/checkUri";
 import { Account } from "./startBrowserHandler";
 
 async function checkUriHandler(mainWindow: BrowserWindow, account: Account) {
-  const status = await checkURI(account.uri);
+  try {
+    const status = await checkURI(account.uri);
 
-  mainWindow.webContents.send(API_GET_CHANNELS.GET_URI_STATUS, { ...account, status});
+    mainWindow.webContents.send(API_GET_CHANNELS.GET_URI_STATUS, {
+      ...account,
+      status,
+    });
 
-  return status;
+    return status;
+  } catch (ex) {
+    console.error("[CHECK URI HANDLER] Error", ex);
+
+    throw ex;
+  }
 }
 
 export default checkUriHandler;

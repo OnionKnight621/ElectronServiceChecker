@@ -38,6 +38,8 @@ function getTxtFileHandler(mainWindow: BrowserWindow) {
       });
   } catch (ex) {
     console.error("[Read TXT] Err", ex);
+
+    throw ex;
   }
 }
 
