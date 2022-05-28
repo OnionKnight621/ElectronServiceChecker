@@ -1,8 +1,8 @@
 {
   "name": "my-new-app",
   "productName": "my-new-app",
-  "version": "1.0.0",
-  "description": "My Electron application description",
+  "version": "0.0.2",
+  "description": "Simple electron + puppeteer online srvice checker",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
@@ -72,6 +72,7 @@
     "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
     "@electron-forge/maker-zip": "^6.0.0-beta.63",
     "@electron-forge/plugin-webpack": "^6.0.0-beta.63",
+    "@types/puppeteer": "^5.4.6",
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.26.0",
     "@typescript-eslint/parser": "^5.26.0",
@@ -87,7 +88,6 @@
     "typescript": "~4.5.4"
   },
   "dependencies": {
-    "@types/puppeteer": "^5.4.6",
     "electron-squirrel-startup": "^1.0.0",
     "is-reachable": "^5.2.0",
     "puppeteer-core": "^14.1.1",

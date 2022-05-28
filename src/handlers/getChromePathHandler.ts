@@ -1,8 +1,8 @@
 import { BrowserWindow, dialog } from "electron";
 
-import { API_CHANNELS, EXTENSIONS } from "../constants";
+import { API_GET_CHANNELS, EXTENSIONS } from "../constants";
 
-function getChromePath(mainWindow: BrowserWindow) {
+function getChromePathHandler(mainWindow: BrowserWindow) {
   console.log(`[HANDLER] Get chrome path`);
 
   try {
@@ -24,7 +24,7 @@ function getChromePath(mainWindow: BrowserWindow) {
           return;
         }
 
-        mainWindow.webContents.send(API_CHANNELS.GET_CHROME_PATH, filePath);
+        mainWindow.webContents.send(API_GET_CHANNELS.GET_CHROME_PATH, filePath);
       })
       .catch((err) => {
         console.error(err, "err");
@@ -34,4 +34,4 @@ function getChromePath(mainWindow: BrowserWindow) {
   }
 }
 
-export default getChromePath;
+export default getChromePathHandler;

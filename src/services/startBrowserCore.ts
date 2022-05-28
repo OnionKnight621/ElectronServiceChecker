@@ -1,4 +1,5 @@
 import puppeteer from "puppeteer-core";
+
 import { browserOptions } from "../config";
 
 async function startBrowserCore(browserExecutablepath: string) {

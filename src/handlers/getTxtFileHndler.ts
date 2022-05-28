@@ -1,9 +1,9 @@
 import { BrowserWindow, dialog } from "electron";
 import * as fs from "fs";
 
-import { API_CHANNELS, EXTENSIONS } from "../constants";
+import { API_GET_CHANNELS, EXTENSIONS } from "../constants";
 
-function getTxtFile(mainWindow: BrowserWindow) {
+function getTxtFileHandler(mainWindow: BrowserWindow) {
   console.log(`[HANDLER] Get txt file`);
 
   try {
@@ -30,7 +30,7 @@ function getTxtFile(mainWindow: BrowserWindow) {
             return;
           }
 
-          mainWindow.webContents.send(API_CHANNELS.GET_TXT_FILE, data);
+          mainWindow.webContents.send(API_GET_CHANNELS.GET_TXT_FILE, data);
         });
       })
       .catch((err) => {
@@ -41,4 +41,4 @@ function getTxtFile(mainWindow: BrowserWindow) {
   }
 }
 
-export default getTxtFile;
+export default getTxtFileHandler;

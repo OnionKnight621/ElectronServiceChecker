@@ -29,8 +29,8 @@
 import "./index.css";
 
 import { defaulthChromePass } from "./config";
-import { API_CHANNELS } from "./constants";
-import { Browser } from "puppeteer-core";
+import { API_TRIGGER_CHANNELS, API_GET_CHANNELS } from "./constants";
+import { Account, IStartBrowserHandler } from "./handlers/startBrowserHandler";
 
 declare const api: {
   send: Function;
@@ -47,38 +47,38 @@ const windowsNum = document.getElementById("windowsNum") as HTMLInputElement;
 const loadedSpan = document.getElementById("loadedSpan") as HTMLSpanElement;
 const chromePathEl = document.getElementById("chromePass") as HTMLSpanElement;
 
+const openOnService = document.querySelector(
+  ".open-on-service"
+) as HTMLButtonElement;
+
 let chromePath: string = defaulthChromePass;
 let file: string;
+let mainIntervalID: NodeJS.Timeout;
 
 chromePathEl.innerHTML = chromePath;
 
 setChromePathBtn.addEventListener("click", async function () {
-  api.send(API_CHANNELS.TRIGGER_GET_CHROME_PATH);
+  api.send(API_TRIGGER_CHANNELS.TRIGGER_GET_CHROME_PATH);
 
-  api.receive(API_CHANNELS.GET_CHROME_PATH, (data: string) => {
+  api.receive(API_GET_CHANNELS.GET_CHROME_PATH, (data: string) => {
     chromePath = data;
     chromePathEl.innerHTML = data;
   });
 });
 
 loadBtn.addEventListener("click", async function () {
-  api.send(API_CHANNELS.TRIGGER_GET_TXT_FILE);
+  api.send(API_TRIGGER_CHANNELS.TRIGGER_GET_TXT_FILE);
 
-  api.receive(API_CHANNELS.GET_TXT_FILE, (data: string) => {
+  api.receive(API_GET_CHANNELS.GET_TXT_FILE, (data: string) => {
     file = data;
     loadedSpan.innerHTML = "loaded";
     startBtn.disabled = false;
   });
 });
 
-export interface Account {
-  email: string;
-  login: string;
-  uri: string;
-  pass: string;
+interface RecievedAccount extends Account {
+  status: boolean;
 }
-
-let mainIntervalID: NodeJS.Timeout;
 
 startBtn.addEventListener("click", () => {
   startBtn.disabled = true;
@@ -107,19 +107,26 @@ startBtn.addEventListener("click", () => {
   const instances: string[] = [];
   const maxInstances: number = Math.abs(Number(windowsNum.value)) || 5;
 
-  api.send(API_CHANNELS.TRIGGER_START_BROWSER, {
+  const startBrowserOptions: IStartBrowserHandler = {
     chromePath,
     instances,
     maxInstances,
     mainIntervalID,
     accounts,
-  });
+  };
 
-  api.receive(API_CHANNELS.GET_URI_STATUS, (data: any) => {
+  api.send(API_TRIGGER_CHANNELS.TRIGGER_START_BROWSER, startBrowserOptions);
+
+  api.receive(API_GET_CHANNELS.GET_URI_STATUS, (account: RecievedAccount) => {
     servicesLog.innerHTML += `
-      <li> ${data.uri} - <span style="color: ${
-      data.status ? "green" : "red"
-    }">${data.status}</span></li>
+      <li> ${account.uri} - <span style="color: ${
+      account.status ? "green" : "red"
+    }">${account.status}</span> <button
+    type="button"
+    class="btn btn-sm btn-secondary open-on-service"
+  >
+    Start
+  </button></li>
     `;
   });
 });

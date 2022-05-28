@@ -11,6 +11,7 @@ async function openPage(
 
   async function removeInstance() {
     instancesArr.splice(instancesArr.indexOf(id), 1);
+    console.log("asdasdasdassdasdasdasda")
     return await page.close();
   }
 
