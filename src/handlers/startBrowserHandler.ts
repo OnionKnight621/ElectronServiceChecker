@@ -14,6 +14,7 @@ export interface Account {
 
 export interface IStartBrowserHandler {
   mainWindow?: BrowserWindow;
+  browserInstance?: Promise<Browser> | null;
   chromePath: string;
   instances: string[];
   maxInstances: number;
@@ -23,15 +24,24 @@ export interface IStartBrowserHandler {
 
 async function startBrowserHandler({
   mainWindow,
+  browserInstance = null,
   chromePath,
   instances,
   maxInstances,
   mainIntervalID,
   accounts,
 }: IStartBrowserHandler) {
-  const browserInstance: Promise<Browser> = startBrowserCore(chromePath);
+  let browser = browserInstance;
+
+  if (!browser) {
+    browser = startBrowserCore(chromePath);
+  }
 
   let i: number = 0;
+
+  (await browser).on("disconnected", () => {
+    clearInterval(mainIntervalID);
+  });
 
   mainIntervalID = setInterval(async () => {
     if (i < accounts.length && instances.length < maxInstances) {
@@ -39,11 +49,7 @@ async function startBrowserHandler({
 
       if (status) {
         try {
-          openPageHandler(
-            browserInstance,
-            `https://${accounts[i].uri}`,
-            instances
-          );
+          openPageHandler(browser, `https://${accounts[i].uri}`, instances);
         } catch (ex) {
           console.error("Failed to load URI", ex);
           alert(`Failed to load URI`);

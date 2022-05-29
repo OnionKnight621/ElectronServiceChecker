@@ -1,7 +1,7 @@
 {
-  "name": "my-new-app",
-  "productName": "my-new-app",
-  "version": "0.0.2",
+  "name": "service-checker",
+  "productName": "service-checker",
+  "version": "0.0.3",
   "description": "Simple electron + puppeteer online srvice checker",
   "main": ".webpack/main",
   "scripts": {

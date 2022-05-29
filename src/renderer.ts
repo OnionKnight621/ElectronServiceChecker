@@ -151,8 +151,6 @@ document.addEventListener("click", function (e: MouseEvent) {
     const email = target.dataset?.email;
     const password = target.dataset?.pass;
 
-    console.log(target.dataset, email, password);
-
     api.send(API_TRIGGER_CHANNELS.TRIGGER_OPEN_EMAIL, { email, password });
   }
 });
