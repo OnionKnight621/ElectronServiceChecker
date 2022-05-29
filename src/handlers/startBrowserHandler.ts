@@ -18,7 +18,7 @@ export interface IStartBrowserHandler {
   chromePath: string;
   instances: string[];
   maxInstances: number;
-  mainIntervalID: NodeJS.Timeout;
+  mainInterval?: any;
   accounts: Account[];
 }
 
@@ -28,7 +28,7 @@ async function startBrowserHandler({
   chromePath,
   instances,
   maxInstances,
-  mainIntervalID,
+  mainInterval,
   accounts,
 }: IStartBrowserHandler) {
   let browser = browserInstance;
@@ -40,10 +40,10 @@ async function startBrowserHandler({
   let i: number = 0;
 
   (await browser).on("disconnected", () => {
-    clearInterval(mainIntervalID);
+    clearInterval(mainInterval.id);
   });
 
-  mainIntervalID = setInterval(async () => {
+  mainInterval.id = setInterval(async () => {
     if (i < accounts.length && instances.length < maxInstances) {
       const status = await checkUriHandler(mainWindow, accounts[i]);
 
@@ -61,7 +61,7 @@ async function startBrowserHandler({
     }
 
     if (i > accounts.length) {
-      clearInterval(mainIntervalID);
+      clearInterval(mainInterval.id);
     }
   }, 500);
 }

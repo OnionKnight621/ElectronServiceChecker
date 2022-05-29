@@ -17,6 +17,11 @@ declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 let mainWindow: BrowserWindow;
 let browserInstance: any;
 
+// need ref to be reachable everywhere
+let mainInterval = {
+  id: null as NodeJS.Timeout | null,
+};
+
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
   // eslint-disable-line global-require
@@ -52,13 +57,7 @@ ipcMain.on(
   API_TRIGGER_CHANNELS.TRIGGER_START_BROWSER,
   async (
     e,
-    {
-      chromePath,
-      instances,
-      maxInstances,
-      mainIntervalID,
-      accounts,
-    }: IStartBrowserHandler
+    { chromePath, instances, maxInstances, accounts }: IStartBrowserHandler
   ) => {
     browserInstance = await startBrowserCore(chromePath);
 
@@ -68,7 +67,7 @@ ipcMain.on(
       chromePath,
       instances,
       maxInstances,
-      mainIntervalID,
+      mainInterval,
       accounts,
     });
   }
@@ -77,6 +76,11 @@ ipcMain.on(
 ipcMain.on(API_TRIGGER_CHANNELS.TRIGGER_OPEN_EMAIL, (e, { email, password }) =>
   openEmailhandler(mainWindow, { email, password, browserInstance })
 );
+
+ipcMain.on(API_TRIGGER_CHANNELS.TRIGGER_STOP_MAIN_CYCLE, () => {
+  console.log(mainInterval, "on click");
+  clearInterval(mainInterval.id);
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common for applications and their menu bar to stay active until the user quits explicitly with Cmd + Q.
 app.on("window-all-closed", () => {

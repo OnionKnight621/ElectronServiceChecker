@@ -43,6 +43,7 @@ declare const api: {
 
 const loadBtn = document.getElementById("loadBtn") as HTMLButtonElement;
 const startBtn = document.getElementById("startBtn") as HTMLButtonElement;
+const stopBtn = document.getElementById("stopBtn") as HTMLButtonElement;
 const setChromePathBtn = document.getElementById(
   "setChromePassBtn"
 ) as HTMLButtonElement;
@@ -58,7 +59,6 @@ interface FileData {
 
 let chromePath: string = defaulthChromePass;
 let file: string;
-let mainIntervalID: NodeJS.Timeout;
 
 chromePathEl.innerHTML = chromePath;
 
@@ -87,6 +87,7 @@ interface RecievedAccount extends Account {
 
 startBtn.addEventListener("click", () => {
   startBtn.disabled = true;
+  stopBtn.disabled = false;
 
   let lines: string[];
   let accounts: Account[] = [];
@@ -117,7 +118,6 @@ startBtn.addEventListener("click", () => {
     chromePath,
     instances,
     maxInstances,
-    mainIntervalID,
     accounts,
   };
 
@@ -137,6 +137,11 @@ startBtn.addEventListener("click", () => {
     </li>
     `;
   });
+});
+
+stopBtn.addEventListener("click", () => {
+  api.send(API_TRIGGER_CHANNELS.TRIGGER_STOP_MAIN_CYCLE);
+  stopBtn.disabled = true;
 });
 
 // for not yet initialized elements

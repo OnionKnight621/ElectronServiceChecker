@@ -9,7 +9,8 @@ export const API_TRIGGER_CHANNELS = {
   TRIGGER_START_BROWSER: "triggerStartBrowser",
   TRIGGER_CHECK_URI: "triggerCheckUri",
   TRIGGER_OPEN_PAGE: "triggerOpenPage",
-  TRIGGER_OPEN_EMAIL: "triggerOpenEmail"
+  TRIGGER_OPEN_EMAIL: "triggerOpenEmail",
+  TRIGGER_STOP_MAIN_CYCLE: "triggerStopMainCycle",
 };
 
 export const API_GET_CHANNELS = {
@@ -17,6 +18,6 @@ export const API_GET_CHANNELS = {
   GET_TXT_FILE: "getTxtFile",
   GET_BROWSER_INSTANCE: "getBrowserInstance",
   GET_URI_STATUS: "geturiStatus",
-}
+};
 
 export const MAX_PAGES_INSTANCES_NUMBER = 5;
