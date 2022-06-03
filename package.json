@@ -72,6 +72,7 @@
     "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
     "@electron-forge/maker-zip": "^6.0.0-beta.63",
     "@electron-forge/plugin-webpack": "^6.0.0-beta.63",
+    "@types/imap": "^0.8.35",
     "@types/puppeteer": "^5.4.6",
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.26.0",
@@ -89,6 +90,7 @@
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
+    "imap": "^0.8.19",
     "is-reachable": "^5.2.0",
     "puppeteer-core": "^14.1.1",
     "uuid": "^8.3.2"
