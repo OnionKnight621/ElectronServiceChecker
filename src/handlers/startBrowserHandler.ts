@@ -1,6 +1,4 @@
-import { BrowserWindow } from "electron";
-import { Browser } from "puppeteer-core";
-
+import { IpcMainHandler } from "../index";
 import startBrowserCore from "../services/startBrowserCore";
 import checkUriHandler from "./checkUriHandler";
 import openPageHandler from "./openPageHandler";
@@ -12,34 +10,35 @@ export interface Account {
   pass: string;
 }
 
-export interface IStartBrowserHandler {
-  mainWindow?: BrowserWindow;
-  browserInstance?: Promise<Browser> | null;
+export interface StartBrowserProps {
   chromePath: string;
   instances: string[];
   maxInstances: number;
-  mainInterval?: any;
   accounts: Account[];
+  mainInterval?: {
+    id: NodeJS.Timer | null;
+  };
+}
+
+export interface StartBrowserHandler extends IpcMainHandler {
+  startBrowserProps: StartBrowserProps;
 }
 
 async function startBrowserHandler({
   mainWindow,
-  browserInstance = null,
-  chromePath,
-  instances,
-  maxInstances,
-  mainInterval,
-  accounts,
-}: IStartBrowserHandler) {
-  let browser = browserInstance;
+  browserInstance,
+  startBrowserProps,
+}: StartBrowserHandler) {
+  const { chromePath, instances, maxInstances, mainInterval, accounts } =
+    startBrowserProps;
 
+  let browser = browserInstance;
+  let i: number = 0;
   if (!browser) {
-    browser = startBrowserCore(chromePath);
+    browser = await startBrowserCore(chromePath);
   }
 
-  let i: number = 0;
-
-  (await browser).on("disconnected", () => {
+  browser.on("disconnected", () => {
     clearInterval(mainInterval.id);
   });
 
@@ -49,10 +48,14 @@ async function startBrowserHandler({
 
       if (status) {
         try {
-          openPageHandler(browser, `https://${accounts[i].uri}`, instances);
+          openPageHandler({
+            browserInstance: browser,
+            url: `https://${accounts[i].uri}`,
+            instancesArr: instances,
+          });
         } catch (ex) {
-          console.error("Failed to load URI", ex);
-          alert(`Failed to load URI`);
+          console.error("[START BROWSER HANDLER] Failed to load URI", ex);
+          alert(`[START BROWSER HANDLER] Failed to load URI`);
 
           throw ex;
         }

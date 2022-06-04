@@ -1,12 +1,14 @@
-import puppeteer from "puppeteer-core";
+import puppeteer, { Browser } from "puppeteer-core";
 
 import { browserOptions } from "../config";
 
-async function startBrowserCore(browserExecutablepath: string) {
+async function startBrowserCore(
+  browserExecutablepath: string
+): Promise<Browser> {
   try {
     console.info("[BROWSER] Opening the browser...");
-    
-    const browser = await puppeteer.launch({
+
+    const browser: Browser = await puppeteer.launch({
       ...browserOptions,
       executablePath: browserExecutablepath,
     });

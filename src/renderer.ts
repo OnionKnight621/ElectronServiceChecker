@@ -34,12 +34,21 @@ import {
   API_GET_CHANNELS,
   MAX_PAGES_INSTANCES_NUMBER,
 } from "./constants";
-import { Account, IStartBrowserHandler } from "./handlers/startBrowserHandler";
+import { Account, StartBrowserProps } from "./handlers/startBrowserHandler";
 
 declare const api: {
   send: Function;
   receive: Function;
 };
+
+interface FileData {
+  data: string;
+  filePath: string;
+}
+
+interface RecievedAccount extends Account {
+  status: boolean;
+}
 
 const loadBtn = document.getElementById("loadBtn") as HTMLButtonElement;
 const startBtn = document.getElementById("startBtn") as HTMLButtonElement;
@@ -51,11 +60,6 @@ const servicesLog = document.getElementById("servicesLog");
 const windowsNum = document.getElementById("windowsNum") as HTMLInputElement;
 const txtPath = document.getElementById("txtPath") as HTMLSpanElement;
 const chromePathEl = document.getElementById("chromePass") as HTMLSpanElement;
-
-interface FileData {
-  data: string;
-  filePath: string;
-}
 
 let chromePath: string = defaulthChromePass;
 let file: string;
@@ -80,10 +84,6 @@ loadBtn.addEventListener("click", async function () {
     startBtn.disabled = false;
   });
 });
-
-interface RecievedAccount extends Account {
-  status: boolean;
-}
 
 startBtn.addEventListener("click", () => {
   startBtn.disabled = true;
@@ -114,7 +114,7 @@ startBtn.addEventListener("click", () => {
   const maxInstances: number =
     Math.abs(Number(windowsNum.value)) || MAX_PAGES_INSTANCES_NUMBER;
 
-  const startBrowserOptions: IStartBrowserHandler = {
+  const startBrowserOptions: StartBrowserProps = {
     chromePath,
     instances,
     maxInstances,

@@ -1,4 +1,9 @@
-async function openPage(browserInstance: any, url: string) {
+import { Browser, Page } from "puppeteer-core";
+
+async function openPage(
+  browserInstance: Browser,
+  url: string
+): Promise<Page> {
   try {
     const browser = await browserInstance;
     const page = await browser.newPage();
@@ -9,7 +14,7 @@ async function openPage(browserInstance: any, url: string) {
       waitUntil: "networkidle2",
     });
 
-    return await page;
+    return page;
   } catch (ex) {
     console.error(`[PAGE CONTROLLER] error`, { ex });
 

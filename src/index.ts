@@ -1,11 +1,12 @@
 import { app, BrowserWindow, ipcMain } from "electron";
+import { Browser } from "puppeteer-core";
 
 import { API_TRIGGER_CHANNELS } from "./constants";
 import getChromePathHandler from "./handlers/getChromePathHandler";
 import getTxtFileHandler from "./handlers/getTxtFileHndler";
 import openEmailhandler from "./handlers/openEmailHandler";
 import startBrowserHandler, {
-  IStartBrowserHandler,
+  StartBrowserProps,
 } from "./handlers/startBrowserHandler";
 import startBrowserCore from "./services/startBrowserCore";
 
@@ -14,8 +15,15 @@ import startBrowserCore from "./services/startBrowserCore";
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
+export type browserInstance = Browser;
+
+export interface IpcMainHandler {
+  mainWindow?: BrowserWindow;
+  browserInstance?: browserInstance;
+}
+
 let mainWindow: BrowserWindow;
-let browserInstance: any;
+let browserInstance: browserInstance;
 
 // need ref to be reachable everywhere
 let mainInterval = {
@@ -55,30 +63,22 @@ ipcMain.on(API_TRIGGER_CHANNELS.TRIGGER_GET_TXT_FILE, () =>
 
 ipcMain.on(
   API_TRIGGER_CHANNELS.TRIGGER_START_BROWSER,
-  async (
-    e,
-    { chromePath, instances, maxInstances, accounts }: IStartBrowserHandler
-  ) => {
-    browserInstance = await startBrowserCore(chromePath);
+  async (e, startBrowserProps: StartBrowserProps) => {
+    browserInstance = await startBrowserCore(startBrowserProps.chromePath);
 
     startBrowserHandler({
       mainWindow,
       browserInstance,
-      chromePath,
-      instances,
-      maxInstances,
-      mainInterval,
-      accounts,
+      startBrowserProps,
     });
   }
 );
 
 ipcMain.on(API_TRIGGER_CHANNELS.TRIGGER_OPEN_EMAIL, (e, { email, password }) =>
-  openEmailhandler(mainWindow, { email, password, browserInstance })
+  openEmailhandler({ mainWindow, browserInstance, email, password })
 );
 
 ipcMain.on(API_TRIGGER_CHANNELS.TRIGGER_STOP_MAIN_CYCLE, () => {
-  console.log(mainInterval, "on click");
   clearInterval(mainInterval.id);
 });
 

@@ -4,7 +4,10 @@ import { API_GET_CHANNELS } from "../constants";
 import checkURI from "../services/checkUri";
 import { Account } from "./startBrowserHandler";
 
-async function checkUriHandler(mainWindow: BrowserWindow, account: Account) {
+async function checkUriHandler(
+  mainWindow: BrowserWindow,
+  account: Account
+): Promise<boolean> {
   try {
     const status = await checkURI(account.uri);
 

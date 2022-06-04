@@ -1,14 +1,18 @@
-import { BrowserWindow } from "electron";
-
 import sleep from "../services/residentSleeper";
 import { primaryMailClient } from "../config";
-
 import openPage from "../services/openPage";
+import { IpcMainHandler } from "../index";
 
-async function openEmailhandler(
-  mainWindow: BrowserWindow,
-  { email, password, browserInstance }: any
-) {
+interface OpenEmailhandler extends IpcMainHandler {
+  email: string;
+  password: string;
+}
+
+async function openEmailhandler({
+  browserInstance,
+  email,
+  password,
+}: OpenEmailhandler) {
   try {
     const { confirmSelector, mailSelector, passwordSelector, uri } =
       primaryMailClient;

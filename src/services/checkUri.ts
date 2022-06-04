@@ -1,6 +1,7 @@
 import isReachable from "is-reachable";
 
-async function checkURI(uri: string) {
+// TODO: replace with normal check
+async function checkURI(uri: string): Promise<boolean> {
   const status = await isReachable(uri);
 
   return status;
